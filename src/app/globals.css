@@ -3,17 +3,23 @@
 @import "shadcn/tailwind.css";
 
 @theme inline {
-  --color-background: #141a17;
+  --color-bg: #141916;
+  --color-font-card: #1E2621;
+  --color-light-bg: #E7EDE6;
+  --color-button: #324138;
+  
+   /* shadcn names */
+  --color-background: #141916;
   --color-foreground: #e6ece6;
-  --color-card: #1e2622;
+  --color-card: #1e2621;
   --color-card-foreground: #e6ece6;
-  --color-popover: #1e2622;
+  --color-popover: #1e2621;
   --color-popover-foreground: #e6ece6;
   --color-primary: #8fbc9f;
-  --color-primary-foreground: #141a17;
-  --color-secondary: #1e2622;
+  --color-primary-foreground: #141916;
+  --color-secondary: #1e2621;
   --color-secondary-foreground: #e6ece6;
-  --color-muted: #1e2622;
+  --color-muted: #1e2621;
   --color-muted-foreground: #8a958e;
   --color-accent: #2a342f;
   --color-accent-foreground: #e6ece6;
@@ -22,9 +28,9 @@
   --color-input: #2a342f;
   --color-ring: #8fbc9f;
 
-  --font-sans: var(--font-inter);
-  --font-serif: var(--font-fraunces);
-  --font-heading: var(--font-serif);
+
+  --font-sans: "Montserrat", sans-serif;
+  --font-serif: "Fraunces", serif;
 
   --radius-sm: 0.75rem;
   --radius-md: 1rem;

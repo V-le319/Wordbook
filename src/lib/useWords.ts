@@ -3,7 +3,10 @@ export type Word = {
   id: string;
   text: string;
   meaning: string;
+  partOfSpeech: string;
   example: string;
+  exampleTranslation: string;
+  note: string;
   learned: boolean;
 };
 
