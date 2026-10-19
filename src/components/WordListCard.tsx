@@ -2,8 +2,8 @@ import type { Word } from "@/lib/useWords";
 
 const WordListCard = ( { words } : { words: Word[] }) => {
   return (
-    <main className='h-auto w-full py-10 flex flex-col'>
-      <div className='flex flex-row gap-2 items-center mb-6'>
+    <main className='h-full overflow-y-auto w-full py-6 flex flex-col'>
+      <div className='flex flex-row gap-2 items-center mb-8'>
         <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="4" cy="4" r="4" fill="#8fbc9f" />
         </svg>

@@ -73,8 +73,8 @@ const CardDeck = ({ words }: { words: Word[] }) => {
   };
 
   return (
-    <div className="flex w-full flex-col items-center gap-4">
-      <div className="relative mb-4 h-[28rem] w-full">
+    <div className="absolute inset-0 flex flex-col items-center gap-4">
+      <div className="relative w-full flex-1 min-h-0">
         {words.length > 1 && (
           <motion.div
             className="pointer-events-none absolute inset-0 z-0"

@@ -7,7 +7,7 @@ const FlashCard = ({ word }: { word: Word }) => {
   return (
     <div
       onClick={() => setFlipped(!flipped)}
-      className="h-full w-full mb-4 cursor-pointer perspective-distant"
+      className="h-full w-full  cursor-pointer perspective-distant"
     >
       <div
         className={cn(
