@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat, Fraunces } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat" });
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces" });
@@ -14,11 +15,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
+    <ClerkProvider>
     <html
       lang="en"
       className={`${montserrat.variable} ${fraunces.variable}`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
+    </ClerkProvider>
   );
 }
