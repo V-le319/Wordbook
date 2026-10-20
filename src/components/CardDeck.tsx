@@ -25,9 +25,10 @@ type SwipeCardProps = {
   onSwipe: (dir: number) => void;
   onDragStart: () => void;
   onTalk: (w: Word) => void;
+  onRemove: (id: string) => void;
 };
 
-const SwipeCard = ({ word, exitDir, progress, onSwipe, onDragStart, onTalk }: SwipeCardProps) => {
+const SwipeCard = ({ word, exitDir, progress, onSwipe, onDragStart, onTalk, onRemove }: SwipeCardProps) => {
   const x = useMotionValue(0);
 
   return (
@@ -57,7 +58,7 @@ const SwipeCard = ({ word, exitDir, progress, onSwipe, onDragStart, onTalk }: Sw
   );
 };
 
-const CardDeck = ({ words, onTalk }: { words: Word[]; onTalk: (w: Word) => void }) => {
+const CardDeck = ({ words, onTalk, onRemove }: { words: Word[]; onTalk: (w: Word) => void; onRemove: (id: string) => void}) => {
   const [index, setIndex] = useState(0);
   const [exitDir, setExitDir] = useState(-1);
   const [showHint, setShowHint] = useState(true);
@@ -65,6 +66,11 @@ const CardDeck = ({ words, onTalk }: { words: Word[]; onTalk: (w: Word) => void 
   const behindOpacity = useTransform(progress, [0, 40], [0, 1]);
 
   if (words.length === 0) return null;
+
+  if (index >= words.length) {
+  setIndex(words.length - 1);
+  return null;
+}
 
   const go = (step: number, dir: number) => {
     progress.set(0);
@@ -95,6 +101,7 @@ const CardDeck = ({ words, onTalk }: { words: Word[]; onTalk: (w: Word) => void 
             onSwipe={(dir) => go(1, dir)}
             onDragStart={() => setShowHint(false)}
             onTalk={onTalk}
+            onRemove={onRemove}
           />
         </AnimatePresence>
 

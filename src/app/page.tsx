@@ -14,7 +14,7 @@ import { useWords, type Word } from "@/lib/useWords";
 
 export default function Home() {
         const [tab, setTab] = useState<"cards" | "words">("cards");
-        const { words, addWord }= useWords();
+        const { words, addWord, removeWord }= useWords();
         const [chatWord, setChatWord] = useState<Word | null>(null);
 
   return (
@@ -29,7 +29,8 @@ export default function Home() {
                       setTab={setTab}
                       />
         <div className="relative w-full lg:w-2/3 flex-1 min-h-0">
-          {tab === "cards" ?  <CardDeck words={words} onTalk={setChatWord} /> : <WordListCard words={words}/>}
+          {tab === "cards" ?  <CardDeck words={words} onTalk={setChatWord} onRemove={removeWord}/> 
+            : <WordListCard words={words}/>}
         </div>
       </div>
 

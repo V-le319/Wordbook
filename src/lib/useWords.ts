@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getWordInfo } from "./getWordInfo";
 
 export type Word = {
   id: string;
@@ -47,11 +48,12 @@ export function useWords() {
     if (loaded) localStorage.setItem(STORAGE_KEY, JSON.stringify(words));
   }, [words, loaded]);
 
-  const addWord = (text: string) => {
+    const addWord = async (text: string) => {
+    const id = crypto.randomUUID();
     const newWord: Word = {
-      id: crypto.randomUUID(),
+      id,
       text,
-      meaning: "",
+      meaning: "Looking up…",
       partOfSpeech: "",
       example: "",
       exampleTranslation: "",
@@ -59,7 +61,20 @@ export function useWords() {
       learned: false,
     };
     setWords((prev) => [newWord, ...prev]);
+
+    const info = await getWordInfo(text);
+
+    if (!info) {
+      setWords((prev) => prev.filter((w) => w.id !== id));
+      return;
+    }
+
+    setWords((prev) => prev.map((w) => (w.id === id ? { ...w, ...info } : w)));
   };
 
-  return { words, addWord };
+  const removeWord = (id: string) => {
+    setWords((prev) => prev.filter((w) => w.id !== id));
+  };
+
+  return { words, addWord, removeWord };
 }
