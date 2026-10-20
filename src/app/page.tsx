@@ -6,14 +6,17 @@ import Login from "@/components/Login";
 import TabSwitcher from "@/components/TabSwitcher";
 import WordListCard from "@/components/WordListCard";
 import { useState } from "react";
-import { useWords } from "@/lib/useWords";
 import CardDeck from "@/components/CardDeck";
+import AiChatSheet from "@/components/AiChatSheet";
+import { useWords, type Word } from "@/lib/useWords";
 
 
 
 export default function Home() {
         const [tab, setTab] = useState<"cards" | "words">("cards");
-        const { words, addWord }= useWords()
+        const { words, addWord }= useWords();
+        const [chatWord, setChatWord] = useState<Word | null>(null);
+
   return (
    <main className="h-screen w-full px-10 lg:px-56 py-10 bg-bg flex flex-col gap-6 lg:gap-10 justify-center items-center">
         <div className="w-full shrink-0 flex flex-row justify-between items-center">
@@ -26,13 +29,12 @@ export default function Home() {
                       setTab={setTab}
                       />
         <div className="relative w-full lg:w-2/3 flex-1 min-h-0">
-          {tab === "cards" ?  <CardDeck words={words} /> : <WordListCard words={words}/>}
+          {tab === "cards" ?  <CardDeck words={words} onTalk={setChatWord} /> : <WordListCard words={words}/>}
         </div>
       </div>
 
-        
-
         <AddWordBar onAdd={addWord}/>
+        <AiChatSheet word={chatWord} onClose={() => setChatWord(null)} />
     </main>
   );
 }

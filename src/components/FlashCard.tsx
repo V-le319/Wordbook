@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import type { Word } from "@/lib/useWords";
 import { useState } from "react";
 
-const FlashCard = ({ word }: { word: Word }) => {
+const FlashCard = ({ word, onTalk }: { word: Word; onTalk?: (w: Word) => void }) => {
   const [flipped, setFlipped] = useState(false);
   return (
     <div
@@ -34,6 +34,16 @@ const FlashCard = ({ word }: { word: Word }) => {
   </div>
 
   <p className="text-base text-background/70">{word.note}</p>
+
+  <button onClick={(e) => {
+          e.stopPropagation();
+          onTalk?.(word);
+          }}
+        className="self-start rounded-full hover:bg-primary/30 hover:border hover:border-button duration-300 cursor-pointer hover:text-bg bg-button px-5 py-3 text-sm font-medium text-light-bg"
+    >
+        Talk about this word
+    </button>
+
 </div>
       </div>
     </div>

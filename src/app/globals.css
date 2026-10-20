@@ -38,6 +38,12 @@
   --radius-xl: 1.75rem;
   --radius-2xl: 2.25rem;
 }
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
 
 @layer base {
   * {

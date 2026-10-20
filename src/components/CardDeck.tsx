@@ -24,9 +24,10 @@ type SwipeCardProps = {
   progress: MotionValue<number>;
   onSwipe: (dir: number) => void;
   onDragStart: () => void;
+  onTalk: (w: Word) => void;
 };
 
-const SwipeCard = ({ word, exitDir, progress, onSwipe, onDragStart }: SwipeCardProps) => {
+const SwipeCard = ({ word, exitDir, progress, onSwipe, onDragStart, onTalk }: SwipeCardProps) => {
   const x = useMotionValue(0);
 
   return (
@@ -51,12 +52,12 @@ const SwipeCard = ({ word, exitDir, progress, onSwipe, onDragStart }: SwipeCardP
         }
       }}
     >
-      <FlashCard word={word} />
+      <FlashCard word={word} onTalk={onTalk} />
     </motion.div>
   );
 };
 
-const CardDeck = ({ words }: { words: Word[] }) => {
+const CardDeck = ({ words, onTalk }: { words: Word[]; onTalk: (w: Word) => void }) => {
   const [index, setIndex] = useState(0);
   const [exitDir, setExitDir] = useState(-1);
   const [showHint, setShowHint] = useState(true);
@@ -80,7 +81,8 @@ const CardDeck = ({ words }: { words: Word[] }) => {
             className="pointer-events-none absolute inset-0 z-0"
             style={{ opacity: behindOpacity, scale: 0.95, y: 14 }}
           >
-            <FlashCard word={words[(index + 1) % words.length]} />
+            <FlashCard word={words[(index + 1) % words.length]} 
+                      onTalk={onTalk}/>
           </motion.div>
         )}
 
@@ -92,6 +94,7 @@ const CardDeck = ({ words }: { words: Word[] }) => {
             progress={progress}
             onSwipe={(dir) => go(1, dir)}
             onDragStart={() => setShowHint(false)}
+            onTalk={onTalk}
           />
         </AnimatePresence>
 
