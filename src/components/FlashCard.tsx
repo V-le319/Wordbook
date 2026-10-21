@@ -13,6 +13,7 @@ const FlashCard = ({ word, onTalk, onRemove }: { word: Word; onTalk?: (w: Word) 
     return () => clearTimeout(t);
   }, [confirm]);
 
+    console.log("FlashCard onRemove:", onRemove);
 
   return (
     <div

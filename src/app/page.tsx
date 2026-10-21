@@ -9,6 +9,8 @@ import { useState } from "react";
 import CardDeck from "@/components/CardDeck";
 import AiChatSheet from "@/components/AiChatSheet";
 import { useWords, type Word } from "@/lib/useWords";
+import { useUser } from "@clerk/nextjs";
+import SignInNotice from "@/components/SignInNotice";
 
 
 
@@ -16,6 +18,18 @@ export default function Home() {
         const [tab, setTab] = useState<"cards" | "words">("cards");
         const { words, addWord, removeWord }= useWords();
         const [chatWord, setChatWord] = useState<Word | null>(null);
+
+        //sign-in condition when using AI assistant chat
+        const { isSignedIn } = useUser();
+        const [showNotice, setShowNotice] = useState(false);
+
+        const handleTalk = (w: Word) => {
+            if (!isSignedIn) {
+            setShowNotice(true);
+            return;
+          }
+      setChatWord(w);
+};
 
   return (
    <main className="h-screen w-full px-10 lg:px-56 py-10 bg-bg flex flex-col gap-6 lg:gap-10 justify-center items-center">
@@ -29,13 +43,16 @@ export default function Home() {
                       setTab={setTab}
                       />
         <div className="relative w-full lg:w-2/3 flex-1 min-h-0">
-          {tab === "cards" ?  <CardDeck words={words} onTalk={setChatWord} onRemove={removeWord}/> 
+          {tab === "cards" ?  
+          <CardDeck words={words} onTalk={handleTalk} onRemove={removeWord}/> 
             : <WordListCard words={words}/>}
         </div>
       </div>
 
         <AddWordBar onAdd={addWord}/>
         <AiChatSheet word={chatWord} onClose={() => setChatWord(null)} />
+        
+        <SignInNotice open={showNotice} onClose={() => setShowNotice(false)} />
     </main>
   );
 }

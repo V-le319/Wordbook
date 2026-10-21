@@ -53,7 +53,7 @@ const SwipeCard = ({ word, exitDir, progress, onSwipe, onDragStart, onTalk, onRe
         }
       }}
     >
-      <FlashCard word={word} onTalk={onTalk} />
+      <FlashCard word={word} onTalk={onTalk} onRemove={onRemove} />
     </motion.div>
   );
 };

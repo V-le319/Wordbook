@@ -2,24 +2,26 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { chatWithWord } from "@/lib/chatWithWord";
 import type { Word } from "@/lib/useWords";
 
-type Msg = { from: "ai" | "me"; text: string };
+type Msg = { from: "ai" | "me"; text: string; send?: string };
 
 const chips = [
   {
     label: "Make a story",
-    reply: (w: Word) =>
-      `Here’s a tiny story to help it stick. Lena watched the lights go out one by one, and what she felt was ${w.text}.\n\n“${w.text}” means: ${w.meaning}.`,
+    prompt:
+      "Write a very short story (4 sentences at most) that uses this word naturally, so I remember what it means.",
   },
   {
     label: "Quiz me",
-    reply: (w: Word) =>
-      `Which sentence uses “${w.text}” correctly?\n\nA) ${w.example}\nB) He ate a ${w.text} for lunch.`,
+    prompt:
+      "Quiz me on this word with one multiple-choice question (options A, B and C). Then wait for my answer.",
   },
   {
     label: "More examples",
-    reply: (w: Word) => `1. ${w.example}\n2. Another example with “${w.text}” will appear here.`,
+    prompt:
+      "Give me 3 new example sentences using this word, each in a different everyday situation.",
   },
 ];
 
@@ -28,22 +30,33 @@ const ChatBox = ({ word }: { word: Word }) => {
     { from: "ai", text: `Let’s work on “${word.text}”. Pick a chip or ask me anything.` },
   ]);
   const [value, setValue] = useState("");
+  const [loading, setLoading] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [msgs]);
+  }, [msgs, loading]);
 
-  const ask = (question: string, answer: string) => {
-    setMsgs((m) => [...m, { from: "me", text: question }]);
-    setTimeout(() => setMsgs((m) => [...m, { from: "ai", text: answer }]), 500);
+  const ask = async (text: string, send?: string) => {
+    if (loading) return;
+    const next: Msg[] = [...msgs, { from: "me", text, send }];
+    setMsgs(next);
+    setLoading(true);
+
+    const reply = await chatWithWord(
+      { text: word.text, meaning: word.meaning, example: word.example },
+      next.map((m) => ({ from: m.from, text: m.send ?? m.text }))
+    );
+
+    setMsgs((m) => [...m, { from: "ai", text: reply }]);
+    setLoading(false);
   };
 
-  const send = () => {
+  const sendTyped = () => {
     const v = value.trim();
     if (!v) return;
     setValue("");
-    ask(v, `The real AI answers here, already knowing “${word.text}”.`);
+    ask(v);
   };
 
   return (
@@ -62,6 +75,11 @@ const ChatBox = ({ word }: { word: Word }) => {
             {m.text}
           </p>
         ))}
+        {loading && (
+          <p className="self-start rounded-2xl rounded-bl-md bg-background px-4 py-3 text-sm text-muted-foreground">
+            Thinking…
+          </p>
+        )}
         <div ref={endRef} />
       </div>
 
@@ -69,8 +87,9 @@ const ChatBox = ({ word }: { word: Word }) => {
         {chips.map((c) => (
           <button
             key={c.label}
-            onClick={() => ask(c.label, c.reply(word))}
-            className="rounded-full border border-border px-3.5 py-2 text-sm text-primary"
+            disabled={loading}
+            onClick={() => ask(c.label, c.prompt)}
+            className="rounded-full border border-border px-3.5 py-2 text-sm text-primary disabled:opacity-50"
           >
             {c.label}
           </button>
@@ -81,11 +100,15 @@ const ChatBox = ({ word }: { word: Word }) => {
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && send()}
+          onKeyDown={(e) => e.key === "Enter" && sendTyped()}
           placeholder="Ask about this word"
           className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
         />
-        <button onClick={send} className="rounded-full bg-primary px-4 py-2 text-sm font-medium cursor-pointer text-background">
+        <button
+          onClick={sendTyped}
+          disabled={loading}
+          className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-background disabled:opacity-50"
+        >
           Send
         </button>
       </div>
