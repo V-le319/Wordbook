@@ -55,30 +55,34 @@ const FlashCard = ({ word, onTalk, onRemove }: { word: Word; onTalk?: (w: Word) 
         </div>
 
         {/* back */}
-<div className="absolute inset-0 flex rotate-y-180 flex-col justify-center gap-4 rounded-3xl bg-light-bg p-10 backface-hidden">
+       
+          <div className="absolute inset-0 flex rotate-y-180 flex-col gap-4 overflow-y-auto no-scrollbar rounded-3xl bg-light-bg p-6 backface-hidden lg:p-10">
   
-  <div>
-    <h2 className="font-serif text-3xl lg:text-4xl leading-tight text-background">{word.meaning}</h2>
-    <p className="mt-1 text-sm text-background/50">{word.partOfSpeech}</p>
-  </div>
+            <div>
+              <h2 className="font-serif text-2xl lg:text-4xl leading-tight text-background">{word.meaning}</h2>
+              <p className="mt-1 text-sm text-background/50">{word.partOfSpeech}</p>
+            </div>
 
-  <div className="border-l-2 border-primary pl-4">
-    <p className="text-base text-background">{word.example}</p>
-    <p className="text-sm italic text-background/50">Meaning: {word.exampleTranslation}</p>
-  </div>
+            <div className="border-l-2 border-primary pl-4">
+                <p className="text-base text-background">{word.example}</p>
+                <p className="text-sm italic text-background/50">Meaning: {word.exampleTranslation}</p>
+            </div>
 
-  <p className="text-base text-background/70">{word.note}</p>
+            <p className="text-base text-background/70">{word.note}</p>
 
-  <button onClick={(e) => {
-          e.stopPropagation();
-          onTalk?.(word);
-          }}
-        className="self-start rounded-full hover:bg-primary/30 hover:border hover:border-button duration-300 cursor-pointer hover:text-bg bg-button px-5 py-3 text-sm font-medium text-light-bg"
-    >
-        Talk about this word
-    </button>
+            <button onClick={(e) => {
+                    e.stopPropagation();
+                    onTalk?.(word);
+                    }}
+                  className="self-start rounded-full hover:bg-primary/30 hover:border hover:border-button duration-300 cursor-pointer hover:text-bg bg-button px-5 py-3 text-sm font-medium text-light-bg"
+                >
+                  Talk about this word
+                </button>
 
-</div>
+        </div>
+        
+
+
       </div>
     </div>
   )
