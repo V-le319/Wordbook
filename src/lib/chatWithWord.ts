@@ -12,11 +12,17 @@ export async function chatWithWord(
   const fail = "Something went wrong. Please try again.";
   try {
     const { userId } = await auth();
-    if (!userId) return "Please sign in to use the AI assistant."
+    if (!userId) return "Please sign in to use the AI assistant.";
 
-    const firstUser = history.findIndex((m) => m.from === "me");
+    // 1. Completely strip out any past failure messages and initial greetings
+    // so Gemini's turn requirements are never violated.
+    const cleanHistory = history.filter(
+      (m) => m.text !== fail && !m.text.startsWith("Let’s work on")
+    );
+
+    const firstUser = cleanHistory.findIndex((m) => m.from === "me");
     if (firstUser === -1) return fail;
-    const turns = history.slice(firstUser);
+    const turns = cleanHistory.slice(firstUser);
 
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
@@ -43,14 +49,15 @@ export async function chatWithWord(
     );
 
     if (!res.ok) {
-      console.log("Chat error:", res.status, await res.text());
+      const errorBody = await res.text();
+      console.error("API Error [Status", res.status, "]:", errorBody);
       return fail;
     }
 
     const data = await res.json();
     return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || fail;
   } catch (err) {
-    console.log("chatWithWord crashed:", err);
+    console.error("chatWithWord crash:", err);
     return fail;
   }
 }
