@@ -13,7 +13,7 @@ const FlashCard = ({ word, onTalk, onRemove }: { word: Word; onTalk?: (w: Word) 
     return () => clearTimeout(t);
   }, [confirm]);
 
-    console.log("FlashCard onRemove:", onRemove);
+    
 
   return (
     <div
@@ -21,6 +21,25 @@ const FlashCard = ({ word, onTalk, onRemove }: { word: Word; onTalk?: (w: Word) 
       className="relative h-full w-full  cursor-pointer perspective-distant"
     >
       
+      {onRemove && (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        if (confirm) onRemove(word.id);
+        else setConfirm(true);
+      }}
+      aria-label={confirm ? "Confirm delete" : "Delete word"}
+      className={cn(
+        "absolute right-4 top-4 z-20 flex h-10 min-w-10 items-center justify-center gap-1 rounded-full border text-sm transition-colors",
+        confirm
+          ? "border-destructive px-3 text-destructive"
+          : "border-muted-foreground/50 text-muted-foreground"
+      )}
+    >
+      <Trash2 size={18} />
+      {confirm && "Delete?"}
+    </button>
+  )}
 
       <div
         className={cn(
@@ -30,26 +49,7 @@ const FlashCard = ({ word, onTalk, onRemove }: { word: Word; onTalk?: (w: Word) 
       >
         {/* front */}
         <div className="absolute inset-0 flex items-center justify-center rounded-2xl  bg-font-card backface-hidden">
-          {onRemove && (
-  <button
-    onClick={(e) => {
-      e.stopPropagation();
-      if (confirm) onRemove(word.id);
-      else setConfirm(true);
-    }}
-    aria-label={confirm ? "Confirm delete" : "Delete word"}
-    className={cn(
-      "absolute right-4 top-4 z-10 flex h-10 min-w-10 items-center justify-center gap-1 rounded-full border text-sm transition-colors",
-      confirm
-        ? "border-destructive px-3 text-destructive"
-        : "border-muted-foreground/50 text-muted-foreground"
-    )}
-  >
-    <Trash2 size={18} />
-    {confirm && "Delete?"}
-  </button>
-)}
-          
+         
           <h2 className="font-serif text-5xl lg:text-6xl text-foreground">{word.text}</h2>
           <p className="absolute bottom-6 text-sm text-muted-foreground">Tap to flip</p>
         </div>
@@ -58,7 +58,7 @@ const FlashCard = ({ word, onTalk, onRemove }: { word: Word; onTalk?: (w: Word) 
        
           <div className="absolute inset-0 flex rotate-y-180 flex-col gap-4 overflow-y-auto no-scrollbar rounded-3xl bg-light-bg p-6 backface-hidden lg:p-10">
   
-            <div>
+            <div className="pr-6">
               <h2 className="font-serif text-2xl lg:text-4xl leading-tight text-background">{word.meaning}</h2>
               <p className="mt-1 text-sm text-background/50">{word.partOfSpeech}</p>
             </div>
